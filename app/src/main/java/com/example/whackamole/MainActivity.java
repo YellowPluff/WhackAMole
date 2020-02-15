@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import androidx.gridlayout.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.Random;
 
@@ -22,35 +24,74 @@ public class MainActivity extends AppCompatActivity {
 
     private Handler handler;
     private MoleHopper moleHopper;
+    private CountDownTimer countDownTimer;
+
+    private TextView countDownTimerTextView;
+    private TextView clickCounterTextView;
+    private int clickCount;
+
+    private TextView instructions;
+    private LinearLayout buttonLayout;
+
+    private int timerVariableSeconds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initFields();
+        for(int i=0; i<16; i++) {
+            imageViews[i] = (ImageView) getLayoutInflater().inflate(R.layout.mole_view, null);
+            imageViews[i].setMinimumWidth(270);
+            imageViews[i].setMinimumHeight(270);
+            grid.addView(imageViews[i]);
+        }
+    }
+
+    private void initFields() {
         grid = findViewById(R.id.gridLayout);
         moleImage = getDrawable(R.drawable.mole);
         imageViews = new ImageView[16];
         random = new Random();
         moleHopper = new MoleHopper();
+        countDownTimer = new CountDownTimer();
         moleLocation = random.nextInt(16);
         handler = new Handler();
-        for(int i=0; i<16; i++) {
-            imageViews[i] = (ImageView) getLayoutInflater().inflate(R.layout.mole_view, null);
-            imageViews[i].setMinimumWidth(270);
-            imageViews[i].setMinimumHeight(270);
-            if(i == moleLocation) {
-                imageViews[i].setImageDrawable(moleImage);
-            }
-            grid.addView(imageViews[i]);
-        }
+        countDownTimerTextView = findViewById(R.id.timer_countdown);
+        clickCounterTextView = findViewById(R.id.click_counter);
+        clickCount = 0;
+        instructions = findViewById(R.id.textView_instructions);
+        buttonLayout = findViewById(R.id.linearLayout_buttons);
     }
 
-    public void startPressed(View v) {
-        if(handler.hasCallbacks(moleHopper))
-        {
-            handler.removeCallbacks(moleHopper);
-        } else {
-            handler.postDelayed(moleHopper, 0);
+    public void button30Seconds(View view) {
+        timerVariableSeconds = 30;
+        handler.postDelayed(countDownTimer, 0);
+        handler.postDelayed(moleHopper, 0);
+        instructions.setVisibility(View.GONE);
+        buttonLayout.setVisibility(View.GONE);
+    }
+
+    public void button1Minutes(View view) {
+        //TODO; Come back when 30 seconds works
+    }
+
+    public void button2Minutes(View view) {
+        //TODO; Come back when 30 seconds works
+    }
+
+    public void stopGame() {
+        handler.removeCallbacks(countDownTimer);
+        handler.removeCallbacks(moleHopper);
+    }
+
+    private class CountDownTimer implements Runnable {
+        @Override
+        public void run() {
+            if(timerVariableSeconds == 0) stopGame();
+            countDownTimerTextView.setText("Timer: " + timerVariableSeconds);
+            timerVariableSeconds--;
+            handler.postDelayed(countDownTimer, 1000);
         }
     }
 
@@ -64,11 +105,13 @@ public class MainActivity extends AppCompatActivity {
             imageViews[moleLocation].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //TODO This is where I want to increment the 0
-                    Log.w("fatal", "I clicked on imageView");
+                    if(timerVariableSeconds > 0) {
+                        clickCount++;
+                        clickCounterTextView.setText("Moles: " + clickCount);
+                        handler.postDelayed(moleHopper, 0);
+                    }
                 }
             });
-            handler.postDelayed(moleHopper, 5000);
         }
     }
 
