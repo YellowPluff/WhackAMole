@@ -59,39 +59,52 @@ public class MainActivity extends AppCompatActivity {
         handler = new Handler();
         countDownTimerTextView = findViewById(R.id.timer_countdown);
         clickCounterTextView = findViewById(R.id.click_counter);
-        clickCount = 0;
         instructions = findViewById(R.id.textView_instructions);
         buttonLayout = findViewById(R.id.linearLayout_buttons);
     }
 
     public void button30Seconds(View view) {
         timerVariableSeconds = 30;
+        startGame();
+    }
+
+    public void button1Minutes(View view) {
+        timerVariableSeconds = 60;
+        startGame();
+    }
+
+    public void button2Minutes(View view) {
+        timerVariableSeconds = 120;
+        startGame();
+    }
+
+    private void startGame() {
+        clickCount = 0;
+        clickCounterTextView.setText("Moles: " + clickCount);
         handler.postDelayed(countDownTimer, 0);
         handler.postDelayed(moleHopper, 0);
         instructions.setVisibility(View.GONE);
         buttonLayout.setVisibility(View.GONE);
     }
 
-    public void button1Minutes(View view) {
-        //TODO; Come back when 30 seconds works
-    }
-
-    public void button2Minutes(View view) {
-        //TODO; Come back when 30 seconds works
-    }
-
-    public void stopGame() {
+    private void stopGame() {
         handler.removeCallbacks(countDownTimer);
         handler.removeCallbacks(moleHopper);
+        instructions.setVisibility(View.VISIBLE);
+        buttonLayout.setVisibility(View.VISIBLE);
     }
 
     private class CountDownTimer implements Runnable {
         @Override
         public void run() {
-            if(timerVariableSeconds == 0) stopGame();
-            countDownTimerTextView.setText("Timer: " + timerVariableSeconds);
-            timerVariableSeconds--;
-            handler.postDelayed(countDownTimer, 1000);
+            if(timerVariableSeconds < 0) {
+                stopGame();
+            } else {
+                countDownTimerTextView.setText("Timer: " + timerVariableSeconds);
+                timerVariableSeconds--;
+                handler.postDelayed(countDownTimer, 1000);
+            }
+
         }
     }
 
