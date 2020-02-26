@@ -2,10 +2,13 @@ package com.example.whackamole;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import androidx.gridlayout.widget.GridLayout;
 import android.widget.ImageView;
@@ -92,6 +95,35 @@ public class MainActivity extends AppCompatActivity {
         handler.removeCallbacks(moleHopper);
         instructions.setVisibility(View.VISIBLE);
         buttonLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.mole_menuitem) {
+            Intent intent = new Intent(this, MoleImageActivity.class);
+            startActivityForResult(intent, 1);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        int moleImage = data.getIntExtra("MOLE_IMAGE", 1);
+        if(moleImage == 1)
+            this.moleImage = getDrawable(R.drawable.mole);
+        else if(moleImage == 2)
+            this.moleImage = getDrawable(R.drawable.mole2);
+        else
+            this.moleImage = getDrawable(R.drawable.mole3);
     }
 
     private class CountDownTimer implements Runnable {
