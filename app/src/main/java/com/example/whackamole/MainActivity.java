@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     private GridLayout grid;
     private Drawable moleImage;
+    private int moleImageInt;
     private ImageView[] imageViews;
     private int moleLocation;
     private Random random;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private void initFields() {
         grid = findViewById(R.id.gridLayout);
         moleImage = getDrawable(R.drawable.mole);
+        moleImageInt = 1;
         imageViews = new ImageView[16];
         random = new Random();
         moleHopper = new MoleHopper();
@@ -106,8 +108,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.mole_menuitem) {
+        if(id == R.id.help_menuitem) {
+            Intent intent = new Intent(this, HelpActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.mole_menuitem) {
             Intent intent = new Intent(this, MoleImageActivity.class);
+            intent.putExtra("MOLE_IMAGE", moleImageInt);
             startActivityForResult(intent, 1);
             return true;
         }
@@ -117,10 +123,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        int moleImage = data.getIntExtra("MOLE_IMAGE", 1);
-        if(moleImage == 1)
+        moleImageInt = data.getIntExtra("MOLE_IMAGE", 1);
+        if(moleImageInt == 1)
             this.moleImage = getDrawable(R.drawable.mole);
-        else if(moleImage == 2)
+        else if(moleImageInt == 2)
             this.moleImage = getDrawable(R.drawable.mole2);
         else
             this.moleImage = getDrawable(R.drawable.mole3);

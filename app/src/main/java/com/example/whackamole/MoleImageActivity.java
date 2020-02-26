@@ -11,6 +11,7 @@ public class MoleImageActivity extends AppCompatActivity {
 
     private RadioButton moleOneButton;
     private RadioButton moleTwoButton;
+    private RadioButton moleThreeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +19,16 @@ public class MoleImageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mole_image);
         moleOneButton = findViewById(R.id.mole_one_button);
         moleTwoButton = findViewById(R.id.mole_two_button);
+        moleThreeButton = findViewById(R.id.mole_three_button);
+        Intent intent = getIntent();
+        int moleImageInt = intent.getIntExtra("MOLE_IMAGE", 1);
+        if(moleImageInt == 1) {
+            moleOneButton.setChecked(true);
+        } else if(moleImageInt == 2) {
+            moleTwoButton.setChecked(true);
+        } else {
+            moleThreeButton.setChecked(true);
+        }
     }
 
 
